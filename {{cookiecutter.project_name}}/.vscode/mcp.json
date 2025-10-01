@@ -1,0 +1,43 @@
+{
+  "mcpServers": {
+    "time": {
+      "command": "mcp-server-time"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "{{cookiecutter.project_name}}"
+      ]
+    },
+    "sequentialthinking": {
+      "command": "npx",
+      "args": ["-y", "sequential-thinking-server"]
+    },
+    "git": {
+      "command": "npx",
+      "args": ["-y", "mcp-server-git", "--repository", "."]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "mcp-server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    },
+    "context7": {
+      "command": "mcp-server-context7",
+      "env": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      }
+    },
+    "braveSearch": {
+      "command": "npx",
+      "args": ["-y", "mcp-server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      }
+    }
+  }
+}
