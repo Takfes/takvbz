@@ -34,14 +34,33 @@ def check_nodejs_availability() -> bool:
 
 
 if __name__ == "__main__":
-    if "{{cookiecutter.include_github_actions}}" != "y":
+    # Handle .github directory based on what features are enabled
+    github_actions_enabled = "{{cookiecutter.include_github_actions}}" == "y"
+    vibecoding_enabled = "{{cookiecutter.include_vibecoding}}" == "y"
+
+    if not github_actions_enabled and not vibecoding_enabled:
+        # Remove entire .github directory if neither feature is enabled
         remove_dir(".github")
-    else:
+    elif not github_actions_enabled and vibecoding_enabled:
+        # Keep .github for vibecoding, but remove workflows
+        remove_dir(".github/workflows")
+        remove_dir(".github/actions")
+    elif github_actions_enabled:
+        # GitHub Actions enabled - handle selective workflow removal
         if (
             "{{cookiecutter.mkdocs}}" != "y"
             and "{{cookiecutter.publish_to_pypi}}" == "n"
         ):
             remove_file(".github/workflows/on-release-main.yml")
+
+    # Clean up vibecoding files if vibecoding is disabled (but .github directory exists)
+    if "{{cookiecutter.include_vibecoding}}" != "y" and os.path.exists(".github"):
+        if os.path.exists(".github/copilot-instructions.md"):
+            remove_file(".github/copilot-instructions.md")
+        if os.path.exists(".github/instructions"):
+            remove_dir(".github/instructions")
+        if os.path.exists(".github/prompts"):
+            remove_dir(".github/prompts")
 
     if "{{cookiecutter.mkdocs}}" != "y":
         remove_dir("docs")
@@ -60,11 +79,6 @@ if __name__ == "__main__":
 
     if "{{cookiecutter.include_vscode_settings}}" != "y":
         remove_dir(".vscode")
-
-    if "{{cookiecutter.include_vibecoding}}" != "y":
-        remove_file(".github/copilot-instructions.md")
-        remove_dir(".github/instructions")
-        remove_dir(".github/prompts")
 
     if "{{cookiecutter.open_source_license}}" == "MIT license":
         move_file("LICENSE_MIT", "LICENSE")
