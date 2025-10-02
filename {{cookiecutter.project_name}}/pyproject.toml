@@ -2,7 +2,9 @@
 name = "{{cookiecutter.project_name}}"
 version = "0.0.1"
 description = "{{cookiecutter.project_description}}"
-authors = [{ name = "{{cookiecutter.author}}", email = "{{cookiecutter.email}}" }]
+authors = [
+    { name = "{{cookiecutter.author}}", email = "{{cookiecutter.email}}" },
+]
 readme = "README.md"
 keywords = ['python']
 requires-python = ">=3.9,<4.0"
@@ -28,7 +30,8 @@ dev = [
     "pytest>=7.2.0",
     "pre-commit>=2.20.0",
     "tox-uv>=1.11.3",
-    {% if cookiecutter.deptry == 'y' %}"deptry>=0.23.0",{% endif %}
+    "interrogate>=1.7.0",
+    {% if cookiecutter.deptry == 'y' %}"deptry>=0.20.0",{% endif %}
     {% if cookiecutter.type_checker == "mypy" -%}
         "mypy>=0.991",
     {%- elif cookiecutter.type_checker == "ty" -%}
@@ -42,18 +45,21 @@ dev = [
 ]
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+
 
 {% if cookiecutter.layout == "src" -%}
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
-packages = ["src/{{cookiecutter.project_slug}}"]
+
 {%- else -%}
+packages = ["src/{{cookiecutter.project_slug}}"]
 [tool.hatch.build.targets.wheel]
-packages = ["{{cookiecutter.project_slug}}"]
+
 {%- endif %}
 
 {% if cookiecutter.type_checker == "mypy" -%}
+packages = ["{{cookiecutter.project_slug}}"]
 [tool.mypy]
 files = [
     {%- if cookiecutter.layout == "src" -%}
@@ -62,6 +68,8 @@ files = [
     "{{cookiecutter.project_slug}}"
     {%- endif -%}
 ]
+
+{%- else -%}
 disallow_untyped_defs = true
 disallow_any_unimported = true
 no_implicit_optional = true
@@ -69,12 +77,12 @@ check_untyped_defs = true
 warn_return_any = true
 warn_unused_ignores = true
 show_error_codes = true
-{%- else -%}
 [tool.ty.environment]
-python = "./.venv"
-python-version = "3.9"
+
 {%- endif %}
 
+python = "./.venv"
+python-version = "3.9"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
@@ -104,7 +112,8 @@ select = [
     # mccabe
     "C90",
     # pycodestyle
-    "E", "W",
+    "E",
+    "W",
     # pyflakes
     "F",
     # pygrep-hooks
@@ -127,14 +136,14 @@ ignore = [
 "tests/*" = ["S101"]
 
 [tool.ruff.format]
-preview = true
+
 
 {% if cookiecutter.codecov == "y" -%}
+preview = true
 [tool.coverage.report]
 skip_empty = true
 
 [tool.coverage.run]
-branch = true
 source = [
     {%- if cookiecutter.layout == "src" -%}
     "src"
@@ -143,3 +152,4 @@ source = [
     {%- endif -%}
 ]
 {% endif %}
+branch = true
