@@ -77,7 +77,35 @@ if __name__ == "__main__":
     if "{{cookiecutter.devcontainer}}" != "y":
         remove_dir(".devcontainer")
 
+    # ========================================
+    # Handle MCP configuration FIRST (before VSCode settings)
+    # ========================================
+    if "{{cookiecutter.include_mcp_config}}" != "y":
+        # Remove MCP-related files if MCP is disabled
+        if os.path.exists(".vscode/mcp.json"):
+            remove_file(".vscode/mcp.json")
+        if os.path.exists(".env.template"):
+            remove_file(".env.template")
+        if os.path.exists("docs/mcp_setup.md"):
+            remove_file("docs/mcp_setup.md")
+    else:
+        # MCP is enabled - check Node.js availability
+        if not check_nodejs_availability():
+            print("⚠️  Node.js not detected. Some MCP servers require Node.js.")
+            print("📖 See docs/mcp_setup.md for installation instructions.")
+
+    # ========================================
+    # Handle VSCode settings with granular approach
+    # ========================================
     if "{{cookiecutter.include_vscode_settings}}" != "y":
+        # Remove only VSCode settings files, preserve .vscode directory for potential MCP files
+        if os.path.exists(".vscode/settings.json"):
+            remove_file(".vscode/settings.json")
+
+    # ========================================
+    # Clean up empty .vscode directory
+    # ========================================
+    if os.path.exists(".vscode") and not os.listdir(".vscode"):
         remove_dir(".vscode")
 
     if "{{cookiecutter.open_source_license}}" == "MIT license":
@@ -139,18 +167,3 @@ if __name__ == "__main__":
                 os.makedirs("src")
             if os.path.exists(project_slug):
                 move_dir(project_slug, os.path.join("src", project_slug))
-
-    # MCP configuration handling
-    if "{{cookiecutter.include_mcp_config}}" != "y":
-        # Remove MCP-related files if MCP is disabled
-        if os.path.exists(".vscode/mcp.json"):
-            remove_file(".vscode/mcp.json")
-        if os.path.exists(".env.template"):
-            remove_file(".env.template")
-        if os.path.exists("docs/mcp_setup.md"):
-            remove_file("docs/mcp_setup.md")
-    else:
-        # MCP is enabled - check Node.js availability
-        if not check_nodejs_availability():
-            print("⚠️  Node.js not detected. Some MCP servers require Node.js.")
-            print("📖 See docs/mcp_setup.md for installation instructions.")
