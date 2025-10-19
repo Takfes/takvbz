@@ -104,6 +104,7 @@ If you see errors about `npx` or Node.js:
 - Double-check API key format and validity
 - Ensure `.env` file is in the project root
 - Verify environment variable names match exactly
+- For more info, refer to the [credentials guide](mcp_credentials.md).
 
 ### Performance Issues
 If MCP servers are slow:
