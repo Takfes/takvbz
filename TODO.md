@@ -1,0 +1,6 @@
+- doc files about copilot and tool usage could be moved to a different location
+- update the smart commit prompt + add changelog generation
+- enable memory mcps servers
+- update readme - include basic make commands
+- what's the vscode settings question in the prompt?
+- enable data and exec (find a better name) folders in the repo
