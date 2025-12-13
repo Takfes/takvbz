@@ -30,6 +30,15 @@ venv: ## Show Python version, venv path, and installed packages
 	@echo "📦 Installed packages:"
 	@uv run pip list
 
+.PHONY: reset-venv
+reset-venv: ## Reset the virtual environment (requires confirmation)
+	@echo "⚠️  This will delete your .venv and reinstall everything."
+	@printf "Are you sure? [y/N] " && read ans && [ "${ans:-N}" = "y" ]
+	@echo "🚀 Resetting environment..."
+	@rm -rf .venv
+	@uv sync
+	@uv run pre-commit install
+
 .PHONY: test
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"

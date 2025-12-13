@@ -20,7 +20,7 @@ repos:
     hooks:
       - id: interrogate
         name: "📚 Python · Check docstring coverage (interrogate)"
-        args: [--config=pyproject.toml] #, --quiet]
+        args: [--config=pyproject.toml, -v] #, --quiet]
         files: \.py$
         types: [python]
 
@@ -77,23 +77,44 @@ repos:
       - id: check-shebang-scripts-are-executable
         name: "🔧 Scripts · Check shebang scripts are executable (pre-commit)"
 
-  # Local hooks for custom cleaning utilities (Windows compatible)
-  - repo: local
-    hooks:
-      - id: clean-cache-files
-        name: "🧹 Cleanup · Remove cache and temporary files (custom)"
-        entry: powershell
-        args:
-          - -Command
-          - |
-            Write-Host "Cleaning cache and temporary files..."
-            Get-ChildItem -Path . -Recurse -Directory -Name "__pycache__" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
-            Get-ChildItem -Path . -Recurse -File -Name ".DS_Store" -ErrorAction SilentlyContinue | Remove-Item -Force
-            Get-ChildItem -Path . -Recurse -Directory -Name "catboost_info" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
-            Get-ChildItem -Path . -Recurse -Directory -Name ".ruff_cache" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
-            Get-ChildItem -Path . -Recurse -Directory -Name ".ipynb_checkpoints" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
-            Get-ChildItem -Path . -Recurse -Directory -Name "*.egg-info" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
-            Write-Host "Cache cleanup completed."
-        language: system
-        always_run: true
-        pass_filenames: false
+  # # Local hooks for custom cleaning utilities (Windows compatible)
+  # - repo: local
+  #   hooks:
+  #     - id: clean-cache-files
+  #       name: "🧹 Cleanup · Remove cache and temporary files (custom)"
+  #       entry: powershell
+  #       args:
+  #         - -Command
+  #         - |
+  #           Write-Host "Cleaning cache and temporary files..."
+  #           Get-ChildItem -Path . -Recurse -Directory -Name "__pycache__" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
+  #           Get-ChildItem -Path . -Recurse -File -Name ".DS_Store" -ErrorAction SilentlyContinue | Remove-Item -Force
+  #           Get-ChildItem -Path . -Recurse -Directory -Name "catboost_info" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
+  #           Get-ChildItem -Path . -Recurse -Directory -Name ".ruff_cache" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
+  #           Get-ChildItem -Path . -Recurse -Directory -Name ".ipynb_checkpoints" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
+  #           Get-ChildItem -Path . -Recurse -Directory -Name "*.egg-info" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
+  #           Write-Host "Cache cleanup completed."
+  #       language: system
+  #       always_run: true
+  #       pass_filenames: false
+
+  # # Local hooks for custom cleaning utilities (macOS/Linux compatible)
+  # - repo: local
+  #   hooks:
+  #     - id: clean-cache-files
+  #       name: "🧹 Cleanup · Remove cache and temporary files (custom)"
+  #       entry: bash -c
+  #       args:
+  #         - |
+  #           echo "Cleaning cache and temporary files..."
+  #           # Use -prune to skip .venv directory for speed
+  #           find . -name ".venv" -prune -o -type d -name "__pycache__" -exec rm -rf {} +
+  #           find . -name ".venv" -prune -o -type f -name ".DS_Store" -exec rm -f {} +
+  #           find . -name ".venv" -prune -o -type d -name "catboost_info" -exec rm -rf {} +
+  #           find . -name ".venv" -prune -o -type d -name ".ruff_cache" -exec rm -rf {} +
+  #           find . -name ".venv" -prune -o -type d -name ".ipynb_checkpoints" -exec rm -rf {} +
+  #           find . -name ".venv" -prune -o -type d -name "*.egg-info" -exec rm -rf {} +
+  #           echo "Cache cleanup completed."
+  #       language: system
+  #       always_run: true
+  #       pass_filenames: false
